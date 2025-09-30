@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kế hoạch: Feedback Vàng - Ngàn Quà Tặng</title>
+    <title>Kế hoạch: Feedback Vàng - Ngàn Quà Tặng (Có Tool Tính Điểm)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -27,7 +27,6 @@
             padding: 0;
         }
 
-        
         html {
             scroll-behavior: smooth;
             scroll-padding-top: 100px;
@@ -112,7 +111,7 @@
         }
         header h1 {
             color: var(--gold);
-            font-size: 45px; /* <<<< User requested change */
+            font-size: 45px;
             margin-bottom: 15px;
             font-weight: 700;
             text-shadow: 0 0 15px rgba(230, 179, 37, 0.4);
@@ -194,8 +193,8 @@
             margin-top: 10px;
             width: 100%;
             text-align: left;
-            white-space: pre-wrap; /* Ensures wrapping */
-            word-break: break-all; /* Breaks long strings */
+            white-space: pre-wrap;
+            word-break: break-all;
         }
 
         .highlight-box {
@@ -204,11 +203,6 @@
             padding: 20px;
             margin: 25px 0;
             border-radius: 0 8px 8px 0;
-        }
-        .highlight-box h4 {
-            color: var(--gold);
-            margin: 0 0 10px 0;
-            font-size: 1.3em;
         }
         .warning-box {
             background-color: rgba(255, 77, 77, 0.1);
@@ -261,6 +255,117 @@
             transform: scale(1.1);
         }
 
+        /* --- Score Calculator Styles --- */
+        .calculator-container {
+            margin-top: 40px;
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--background);
+        }
+        .calculator-container h4 {
+            text-align: center;
+            color: var(--text-primary);
+            font-size: 1.5em;
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--light-blue);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--text-primary);
+            font-size: 1em;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(230, 179, 37, 0.3);
+        }
+        #calculateBtn {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--gold);
+            color: var(--dark-blue);
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        #calculateBtn:hover {
+            background-color: #ffcc33;
+            transform: translateY(-2px);
+        }
+        .result-container {
+            margin-top: 25px;
+            text-align: center;
+        }
+        .result-container p {
+            font-size: 1.2em;
+            color: var(--text-primary);
+        }
+        #totalScore {
+            font-size: 4em;
+            color: var(--gold);
+            font-weight: 700;
+            text-shadow: 0 0 15px rgba(230, 179, 37, 0.5);
+            transition: transform 0.3s ease-out;
+        }
+
+        /* --- Google Form CTA Styles --- */
+        .cta-form-container {
+            margin-top: 40px;
+            padding: 30px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--gold), #ffcc33);
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(230, 179, 37, 0.2);
+        }
+        .cta-form-container h3 {
+            color: var(--dark-blue);
+            font-size: 2em;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .cta-form-container p {
+            color: var(--dark-blue);
+            opacity: 0.8;
+            max-width: 600px;
+            margin: 0 auto 25px auto;
+        }
+        .cta-button {
+            display: inline-block;
+            padding: 15px 40px;
+            background-color: var(--dark-blue);
+            color: var(--white, #fff);
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1em;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .cta-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
         /* --- Mobile Optimizations --- */
         @media (max-width: 768px) {
             html { 
@@ -276,7 +381,7 @@
                 padding: 90px 15px 60px 15px; 
             }
             header h1 {
-                font-size: 35px; /* Slightly smaller on mobile for better fit */
+                font-size: 38px; /* Slightly smaller on mobile for better fit */
             }
             section { 
                 padding: 25px 20px; 
@@ -297,6 +402,18 @@
                 font-size: 18px;
                 bottom: 20px;
                 right: 20px;
+            }
+            .calculator-container {
+                padding: 20px;
+            }
+            #totalScore {
+                font-size: 3.5em;
+            }
+            .cta-form-container {
+                padding: 25px;
+            }
+            .cta-form-container h3 {
+                font-size: 1.8em;
             }
         }
 
@@ -324,9 +441,9 @@
         </header>
 
         <main>
-            <section id="tong-quan">
-                <h2>A. TỔNG QUAN CHƯƠRNG TRÌNH</h2>
-                <h3 >1. Tên chương trình:</h3><p style="color:#E6B325;font-size: 25px;font-style: italic;">" Feedback Vàng - Ngàn Quà Tặng "</p>
+             <section id="tong-quan">
+                <h2>A. TỔNG QUAN CHƯƠNG TRÌNH</h2>
+                <h3>1. Tên chương trình:</h3><p>Feedback Vàng - Ngàn Quà Tặng</p>
                 <h3>2. Slogan/Thông điệp:</h3><p>Chia sẻ thật - Nhận quà chất!</p>
                 <h3>3. Mục tiêu:</h3>
                 <ul>
@@ -419,11 +536,17 @@
                 <h3>3. Cách thức nộp bài:</h3>
                 <ol>
                     <li><strong>Bước 1:</strong> Đối tác tải video lên một dịch vụ lưu trữ (Google Drive, YouTube, TikTok, Facebook...).</li>
-                    <li><strong>Bước 2:</strong> Điền thông tin và gửi link video qua một form đăng ký online do công ty tạo (Google Forms). Form bao gồm các trường: Họ tên NPP/CTV, Số điện thoại, Địa chỉ, Link video, Hạng mục dự thi(Video của khách hàng hay của NPP), .</li>
+                    <li><strong>Bước 2:</strong> Điền thông tin và gửi link video qua một form đăng ký online do công ty tạo (Google Forms).</li>
                     <li><strong>Bước 3:</strong> Kêu gọi, chia sẻ, tích cực khi Video của mình được đăng tải trên các kênh truyền thông của Jullien Day</li>
                 </ol>
                 <p><strong>Lưu ý:</strong> Hạn chót nộp bài là <strong>23:59 ngày 30/11/2025</strong>.</p>
-            </section>
+
+                <div class="cta-form-container">
+                    <h3>GỬI BÀI DỰ THI NGAY!</h3>
+                    <p>Sẵn sàng chia sẻ câu chuyện của bạn và nhận những phần quà hấp dẫn? Nhấn vào nút bên dưới để gửi video dự thi qua Google Form của chương trình.</p>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSdpiuvXtD88ET7TregiT3Ep-4XKSxhtPkvj2LMpbek4aziwpg/viewform" class="cta-button" target="_blank" rel="noopener noreferrer">NỘP BÀI TẠI ĐÂY</a>
+                </div>
+                </section>
             
             <section id="giai-thuong">
                 <h2>C. CƠ CẤU GIẢI THƯỞNG & TIÊU CHÍ CHẤM ĐIỂM</h2>
@@ -438,7 +561,31 @@
                 <div class="warning-box">
                     🚫 Những Video có hành vi tăng Like, CMT, Share, View ảo sẽ bị BTC loại khỏi cuộc thi mà không cần thông báo.
                 </div>
-
+                
+                <div class="calculator-container">
+                    <h4>BỘ TÍNH ĐIỂM TƯƠNG TÁC</h4>
+                    <div class="input-group">
+                        <label for="views">Lượt Views</label>
+                        <input type="number" id="views" placeholder="VD: 10000" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label for="likes">Lượt Likes/Tym</label>
+                        <input type="number" id="likes" placeholder="VD: 300" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label for="comments">Lượt Bình luận</label>
+                        <input type="number" id="comments" placeholder="VD: 40" min="0">
+                    </div>
+                    <div class="input-group">
+                        <label for="shares">Lượt Share</label>
+                        <input type="number" id="shares" placeholder="VD: 40" min="0">
+                    </div>
+                    <button id="calculateBtn">TÍNH ĐIỂM</button>
+                    <div class="result-container">
+                        <p>Tổng điểm tương tác của bạn là:</p>
+                        <span id="totalScore">0</span>
+                    </div>
+                </div>
                 <h3>2. Cơ cấu giải thưởng</h3>
                 <h4>🎁 GIẢI THƯỞNG THAM GIA</h4>
                 <p><strong>Nội dung:</strong> Dành cho TẤT CẢ các đối tác có video gửi về được duyệt hợp lệ.</p>
@@ -536,7 +683,7 @@
     <button onclick="scrollToTop()" id="toTopBtn" title="Lên đầu trang">↑</button>
     
     <script>
-        // --- Gemini Canvas Background Animation ---
+        // --- Canvas Background Animation ---
         const canvas = document.getElementById('canvas-background');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -559,7 +706,6 @@
                 this.y += this.speedY;
                 if (this.size > 0.2) this.size -= 0.015;
 
-                // Reset particle if it goes off screen or becomes too small
                 if (this.size <= 0.2 || this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
                     this.x = Math.random() * canvas.width;
                     this.y = Math.random() * canvas.height;
@@ -650,8 +796,32 @@
             scrollFunction();
             handleNav();
         };
+        
+        // --- Score Calculator Logic ---
+        const calculateBtn = document.getElementById('calculateBtn');
+        const totalScoreEl = document.getElementById('totalScore');
+
+        function calculateScore() {
+            const views = parseInt(document.getElementById('views').value) || 0;
+            const likes = parseInt(document.getElementById('likes').value) || 0;
+            const comments = parseInt(document.getElementById('comments').value) || 0;
+            const shares = parseInt(document.getElementById('shares').value) || 0;
+
+            const score = Math.round(views / 100) + (likes * 1) + (comments * 2) + (shares * 5);
+
+            totalScoreEl.innerText = score;
+
+            // Simple animation
+            totalScoreEl.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                totalScoreEl.style.transform = 'scale(1)';
+            }, 300);
+        }
+
+        if(calculateBtn) {
+            calculateBtn.addEventListener('click', calculateScore);
+        }
+
     </script>
 </body>
-
 </html>
-
