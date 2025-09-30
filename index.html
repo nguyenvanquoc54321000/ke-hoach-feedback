@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kế hoạch: Feedback Vàng - Ngàn Quà Tặng (Tối ưu Mobile)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #E6B325;
+            --dark-blue: #0A192F;
+            --light-blue: #1E2D4A;
+            --text-primary: #CCD6F6;
+            --text-secondary: #8892B0;
+            --background: #0A192F;
+            --card-bg: linear-gradient(145deg, #1e2d4a, #15213a);
+            --border-color: rgba(230, 179, 37, 0.2);
+            --shadow-color: rgba(0, 0, 0, 0.5);
+            --danger-color: #ff4d4d;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 100px;
+        }
+
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            line-height: 1.7;
+            background-color: var(--background);
+            color: var(--text-secondary);
+            overflow-x: hidden;
+        }
+
+        /* --- Canvas Background --- */
+        #canvas-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.5;
+        }
+        
+        /* --- Main Container --- */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* --- Navigation --- */
+        nav {
+            background-color: rgba(10, 25, 47, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 15px var(--shadow-color);
+            border-bottom: 1px solid var(--border-color);
+            transition: top 0.3s;
+        }
+        .nav-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 10px; /* Reduced padding for mobile */
+            overflow-x: auto;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+        }
+        /* Hide scrollbar for the nav container */
+        .nav-container::-webkit-scrollbar { display: none; }
+        .nav-container { -ms-overflow-style: none; scrollbar-width: none; }
+
+        nav a {
+            color: var(--text-primary);
+            text-decoration: none;
+            padding: 8px 16px;
+            margin: 0 5px;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+            font-weight: 500;
+            font-size: 0.9em;
+            border: 1px solid transparent;
+        }
+        nav a:hover, nav a.active {
+            background-color: var(--gold);
+            color: var(--dark-blue);
+        }
+        
+        /* --- Header --- */
+        header {
+            text-align: center;
+            padding: 120px 20px 80px 20px;
+            min-height: 50vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        header h1 {
+            color: var(--gold);
+            font-size: 45px; /* <<<< User requested change */
+            margin-bottom: 15px;
+            font-weight: 700;
+            text-shadow: 0 0 15px rgba(230, 179, 37, 0.4);
+        }
+        header .slogan {
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
+            font-style: italic;
+            color: var(--text-primary);
+            font-weight: 300;
+        }
+
+        /* --- Section "Card" Styling --- */
+        section {
+            background: var(--card-bg);
+            margin: 40px 0;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px -15px var(--shadow-color);
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, opacity 0.5s ease-in-out;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px -15px var(--shadow-color);
+        }
+        section h2 {
+            font-size: 2.2em;
+            color: var(--text-primary);
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            position: relative;
+            font-weight: 700;
+        }
+        section h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: var(--gold);
+            border-radius: 2px;
+        }
+        section h3 {
+            font-size: 1.6em;
+            color: var(--gold);
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+         section h4 {
+            font-size: 1.2em;
+            color: var(--text-primary);
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        /* --- Typography & Elements --- */
+        p, li {
+            margin-bottom: 12px;
+            font-size: 1.05em;
+        }
+        ul, ol { padding-left: 25px; }
+        strong { color: var(--gold); font-weight: 500; }
+        code {
+            background-color: var(--background);
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            color: var(--gold);
+            display: block;
+            margin-top: 10px;
+            width: 100%;
+            text-align: left;
+            white-space: pre-wrap; /* Ensures wrapping */
+            word-break: break-all; /* Breaks long strings */
+        }
+
+        .highlight-box {
+            background-color: rgba(10, 25, 47, 0.7);
+            border-left: 4px solid var(--gold);
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .highlight-box h4 {
+            color: var(--gold);
+            margin: 0 0 10px 0;
+            font-size: 1.3em;
+        }
+        .warning-box {
+            background-color: rgba(255, 77, 77, 0.1);
+            border-left: 4px solid var(--danger-color);
+            padding: 15px 20px;
+            margin: 25px 0;
+            border-radius: 0 8px 8px 0;
+            color: #ffcccc;
+            font-weight: 500;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+        }
+        th, td {
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            text-align: left;
+        }
+        th {
+            background-color: var(--light-blue);
+            color: var(--gold);
+            font-weight: 700;
+        }
+        
+        /* --- Back to Top Button --- */
+        #toTopBtn {
+            display: none;
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            z-index: 99;
+            border: none;
+            outline: none;
+            background-color: var(--gold);
+            color: var(--dark-blue);
+            cursor: pointer;
+            padding: 15px;
+            border-radius: 50%;
+            font-size: 20px;
+            width: 55px;
+            height: 55px;
+            box-shadow: 0 5px 15px var(--shadow-color);
+            transition: background-color 0.3s, transform 0.3s, opacity 0.3s;
+        }
+        #toTopBtn:hover {
+            background-color: #ffcc33;
+            transform: scale(1.1);
+        }
+
+        /* --- Mobile Optimizations --- */
+        @media (max-width: 768px) {
+            html { 
+                scroll-padding-top: 80px; 
+            }
+            body {
+                -webkit-text-size-adjust: 100%; /* Prevent font scaling on iOS */
+            }
+            .container {
+                padding: 0 15px;
+            }
+            header { 
+                padding: 90px 15px 60px 15px; 
+            }
+            header h1 {
+                font-size: 38px; /* Slightly smaller on mobile for better fit */
+            }
+            section { 
+                padding: 25px 20px; 
+                margin: 30px 0;
+            }
+            section h2 {
+                font-size: 1.8em;
+            }
+            section h3 {
+                font-size: 1.4em;
+            }
+            th, td {
+                padding: 10px;
+            }
+            #toTopBtn {
+                width: 48px;
+                height: 48px;
+                font-size: 18px;
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <canvas id="canvas-background"></canvas>
+
+    <nav id="navbar">
+        <div class="nav-container">
+            <a href="#tong-quan">A. Tổng Quan</a>
+            <a href="#the-le">B. Thể Lệ</a>
+            <a href="#giai-thuong">C. Giải Thưởng</a>
+            <a href="#truyen-thong">D. Truyền Thông</a>
+            <a href="#phan-cong">E. Phân Công</a>
+            <a href="#van-hanh">F. Vận Hành</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header>
+            <h1>FEEDBACK VÀNG - NGÀN QUÀ TẶNG</h1>
+            <p class="slogan">Chia sẻ thật - Nhận quà chất!</p>
+        </header>
+
+        <main>
+            <section id="tong-quan">
+                <h2>A. TỔNG QUAN CHƯƠRNG TRÌNH</h2>
+                <h3 >1. Tên chương trình:</h3><p style="color:#E6B325;font-size: 25px;font-style: italic;">" Feedback Vàng - Ngàn Quà Tặng "</p>
+                <h3>2. Slogan/Thông điệp:</h3><p>Chia sẻ thật - Nhận quà chất!</p>
+                <h3>3. Mục tiêu:</h3>
+                <ul>
+                    <li>Xây dựng một thư viện video feedback chân thực, chất lượng cao từ khách hàng và hệ thống phân phối.</li>
+                    <li>Tạo nguồn tư liệu dồi dào để phát triển các kênh TikTok, Fanpage Video, và YouTube của Jullien Day.</li>
+                    <li>Thúc đẩy toàn bộ hệ thống NPP, CTV, Điểm bán tham gia vào hoạt động marketing, lan tỏa hình ảnh và chất lượng sản phẩm.</li>
+                    <li>Gia tăng sự tin tưởng của khách hàng mới thông qua những câu chuyện và cảm nhận thật.</li>
+                </ul>
+                <h3>4. Thời gian diễn ra:</h3><p>Từ <strong>01/10/2025</strong> đến hết ngày <strong>30/11/2025</strong>.</p>
+                <h3>5. Đối tượng tham gia:</h3><p>Toàn bộ hệ thống Nhà Phân Phối (NPP) các cấp, Cộng Tác Viên (CTV), và các Điểm bán (cửa hàng tạp hóa...) đang kinh doanh sản phẩm của Jullien Day.</p>
+            </section>
+            
+            <section id="the-le">
+                <h2>B. NỘI DUNG VÀ THỂ LỆ THAM GIA</h2>
+                <h3>1. Hạng mục dự thi (Gồm 2 hạng mục):</h3>
+                
+                <h4>Hạng mục 1: "CẢM NHẬN CỦA KHÁCH HÀNG SAU KHI DÙNG SẢN PHẨM CỦA JULLIEN DAY"</h4>
+                <p><strong>Nội dung:</strong> Đối tác (NPP, CTV,...) thực hiện phỏng vấn và quay video clip khách hàng của mình đang chia sẻ cảm nhận, review thực tế về các sản phẩm của Jullien Day (ưu tiên Nước giặt xả, Nước rửa chén...).</p>
+                <p><strong>Yêu cầu:</strong> Video phải có sự xuất hiện của khách hàng, sản phẩm Jullien Day mà họ đang nói đến, và không khí phỏng vấn tự nhiên, chân thật.</p>
+
+                <div class="highlight-box">
+                    <h4>GỢI Ý</h4>
+                    <p><strong>Bối cảnh:</strong> Quay tại không gian sống của khách hàng (góc bếp, nơi giặt giũ...), sản phẩm Jullien Day (nước giặt, nước rửa chén,...) được đặt ở vị trí tự nhiên, dễ nhìn thấy.</p>
+                    <p><strong>Kịch bản gợi ý:</strong></p>
+                    <ul>
+                        <li><strong>Mở đầu (5s):</strong> NPP chào hỏi thân thiện, giới thiệu ngắn gọn.</li>
+                        <li><strong>Giới thiệu khách hàng (5s):</strong> Xin phép hỏi tên, khu vực sinh sống (VD: "Em chào chị Lan ở xã ABC, huyện XYZ ạ").</li>
+                        <li><strong>Hỏi về trải nghiệm (30-40s):</strong> Đây là phần quan trọng nhất.</li>
+                        <li><strong>Lời khuyên & Kết thúc (10s):</strong> Khách hàng đưa ra lời khuyên và chào khán giả.</li>
+                    </ul>
+                    <p><strong>Bộ câu hỏi phỏng vấn (Sale linh hoạt sử dụng):</strong></p>
+                    <ol>
+                        <li><strong>Câu hỏi "mồi":</strong>
+                            <ul>
+                                <li>"Trước khi biết đến Jullien Day, chị thường gặp vấn đề gì với việc giặt giũ/rửa chén không ạ?" (VD: Nước giặt cũ không thơm, nước rửa chén hại da tay...).</li>
+                                <li>"Chị biết đến sản phẩm nước giặt/nước rửa chén Jullien Day qua đâu ạ?" (Qua NPP, qua quảng cáo, bạn bè giới thiệu...).</li>
+                            </ul>
+                        </li>
+                        <li><strong>Câu hỏi "mớm" để lấy feedback đắt giá (Quan trọng nhất):</strong>
+                            <ul>
+                                <li>Với Nước Giặt: "Khi dùng nước giặt Jullien Day, điều gì làm chị ấn tượng nhất? Có phải là mùi hương sang trọng, thơm lâu hay là khả năng giặt sạch vết bẩn mà vẫn an toàn cho da tay không ạ?"</li>
+                                <li>Với Nước Rửa Chén: "Nhiều chị em rất thích nước rửa chén Jullien Day vì vừa sạch nhanh kin kít lại vừa có chiết xuất tự nhiên mềm mại cho da tay. Chị có cảm nhận như vậy không ạ?"</li>
+                                <li>"So với các sản phẩm cũ từng dùng, chị thấy sản phẩm của Jullien Day có điểm gì vượt trội hơn ạ?"</li>
+                            </ul>
+                        </li>
+                        <li><strong>Câu hỏi "chốt":</strong>
+                            <ul>
+                                <li>"Nếu dùng một từ để nói về sản phẩm, chị sẽ dùng từ gì ạ?" (VD: Tuyệt vời, chất lượng, ưng ý...).</li>
+                                <li>"Chị có sẵn lòng giới thiệu sản phẩm Jullien Day cho bạn bè, người thân của mình không ạ?"</li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+                
+                <h4>Hạng mục 2: "CÂU CHUYỆN KINH DOANH CÙNG JULLIEN DAY"</h4>
+                <p><strong>Nội dung:</strong> Đối tác tự quay video chia sẻ về câu chuyện của chính mình.</p>
+                <p><strong>Chủ đề gợi ý:</strong> Lý do chọn Jullien Day? Quá trình kinh doanh đã thay đổi cuộc sống của bạn ra sao? Chính sách và sự hỗ trợ của công ty đã giúp bạn như thế nào? Phản hồi của khách hàng tại khu vực của bạn? Giới thiệu điểm bán của bạn như thế nào? Quay lại quá trình soạn hàng, giao hàng cho khách,...</p>
+                <p><strong>Yêu cầu:</strong> Video có sự xuất hiện của đối tác tại điểm bán, tại nhà cùng sản phẩm, hoặc trong quá trình tư vấn/giao hàng/gói hàng.</p>
+
+                <div class="highlight-box">
+                    <h4>GỢI Ý</h4>
+                    <p><strong>KỊCH BẢN GỢI Ý - "ĐIỂM BÁN JULLIEN DAY UY TÍN TẠI KHU VỰC"</strong></p>
+                    <p>Mục tiêu: Giới thiệu cửa hàng là một điểm đến tin cậy để mua sản phẩm Jullien Day chính hãng, đồng thời truyền cảm hứng cho các chủ tiệm tạp hóa khác.</p>
+                    <ol>
+                        <li><strong>Mở đầu (5 giây):</strong> Quay một cảnh rộng, sáng sủa phía trước cửa hàng/tạp hóa. Chủ điểm bán đứng trước cửa, mỉm cười và vẫy tay chào.</li>
+                        <li><strong>Giới thiệu Điểm bán & Sản phẩm (15 giây):</strong> Đi từ ngoài vào trong, lia máy quay đến thẳng kệ trưng bày sản phẩm Jullien Day. Kệ hàng cần được sắp xếp gọn gàng, đầy đủ và bắt mắt.</li>
+                        <li><strong>Phần Cốt lõi - Chia sẻ của Chủ Cửa Hàng (30 giây):</strong> Đứng cạnh kệ hàng, tay cầm một sản phẩm bán chạy (như túi nước giặt hoặc Combo 3).</li>
+                        <li><strong>Kêu gọi hành động & Kết thúc (10 giây):</strong> Cầm sản phẩm trên tay và mỉm cười thân thiện với camera.</li>
+                    </ol>
+                    <p><strong>KỊCH BẢN GỢI Ý - "MỘT NGÀY LÀM VIỆC CÙNG JULLIEN DAY"</strong></p>
+                    <p>Mục tiêu: Thể hiện hình ảnh một NPP năng động, bận rộn và niềm vui khi kinh doanh sản phẩm chất lượng, được công ty hỗ trợ.</p>
+                    <ol>
+                        <li><strong>Mở đầu (5 giây):</strong> Quay các cảnh nhanh: Nhận thông báo đơn hàng trên điện thoại, soạn sản phẩm, đóng gói.</li>
+                        <li><strong>Giới thiệu (8 giây):</strong> Xuất hiện và chào hỏi khán giả.</li>
+                        <li><strong>Phần Cốt lõi - Kể chuyện (30-40 giây):</strong> Vừa tiếp tục đóng gói một đơn hàng, vừa chia sẻ câu chuyện.</li>
+                        <li><strong>Lời khuyên & Kết thúc (10 giây):</strong> Hoàn thành việc đóng gói, chất hàng lên xe và chuẩn bị đi giao.</li>
+                    </ol>
+                </div>
+
+                <h3>2. Tiêu chuẩn kỹ thuật cho Video:</h3>
+                <ul>
+                    <li><strong>Định dạng:</strong> Quay bằng điện thoại, theo <strong>KHUNG HÌNH DỌC (tỷ lệ 9:16)</strong> để tối ưu cho TikTok và Facebook Reels.</li>
+                    <li><strong>Chất lượng:</strong> Tối thiểu Full HD 1080p, hình ảnh rõ nét, không bị tối, mờ, rung lắc quá nhiều.</li>
+                    <li><strong>Bối cảnh:</strong> Tự nhiên, chân thực, và bắt buộc phải có sản phẩm Jullien Day xuất hiện trong khung hình.</li>
+                    <li><strong>Âm thanh:</strong> <strong>RÕ RÀNG</strong> là yếu tố quan trọng nhất!</li>
+                    <li><strong>Thời lượng:</strong> Từ 30 đến 90 giây.</li>
+                    <li><strong>Tính chân thực:</strong> Khuyến khích sự tự nhiên, mộc mạc. Không yêu cầu kỹ xảo phức tạp - Jullien Day hỗ trợ Edit lại Video.</li>
+                </ul>
+
+                <h3>3. Cách thức nộp bài:</h3>
+                <ol>
+                    <li><strong>Bước 1:</strong> Đối tác tải video lên một dịch vụ lưu trữ (Google Drive, YouTube, TikTok, Facebook...).</li>
+                    <li><strong>Bước 2:</strong> Điền thông tin và gửi link video qua một form đăng ký online do công ty tạo (Google Forms). Form bao gồm các trường: Họ tên NPP/CTV, Số điện thoại, Địa chỉ, Link video, Hạng mục dự thi(Video của khách hàng hay của NPP), .</li>
+                    <li><strong>Bước 3:</strong> Kêu gọi, chia sẻ, tích cực khi Video của mình được đăng tải trên các kênh truyền thông của Jullien Day</li>
+                </ol>
+                <p><strong>Lưu ý:</strong> Hạn chót nộp bài là <strong>23:59 ngày 30/11/2025</strong>.</p>
+            </section>
+            
+            <section id="giai-thuong">
+                <h2>C. CƠ CẤU GIẢI THƯỞNG & TIÊU CHÍ CHẤM ĐIỂM</h2>
+                <h3>1. Tiêu chí chấm điểm:</h3>
+                <ul>
+                    <li>Dựa trên tính hợp lệ của Video mà Jullien Day đã đề ra trước đó.</li>
+                    <li><strong>Lượt tương tác:</strong> Dựa vào tổng điểm tương tác công khai trên 2 nền tảng Facebook & TikTok. Điểm được tính theo công thức:
+                        <code>Tổng Điểm = (Views / 100) + (Like/Tym x 1) + (Bình luận x 2) + (Share x 5)</code>
+                    </li>
+                    <li><strong>Giải Bền Bỉ:</strong> Dựa trên số lượng video hợp lệ đã gửi về.</li>
+                </ul>
+                <div class="warning-box">
+                    🚫 Những Video có hành vi tăng Like, CMT, Share, View ảo sẽ bị BTC loại khỏi cuộc thi mà không cần thông báo.
+                </div>
+
+                <h3>2. Cơ cấu giải thưởng</h3>
+                <h4>🎁 GIẢI THƯỞNG THAM GIA</h4>
+                <p><strong>Nội dung:</strong> Dành cho TẤT CẢ các đối tác có video gửi về được duyệt hợp lệ.</p>
+                <p><strong>Phần thưởng:</strong> Mỗi video hợp lệ được gửi về sẽ nhận ngay 01 sản phẩm tự chọn: 1 túi nước giặt xả, 1 sữa rửa mặt, 1 dầu xả,...</p>
+                <p>Mỗi 1 NPP sẽ được nhận 1 phần quà gửi clip lên được duyệt.</p>
+                
+                <h4>🏆 CÁC GIẢI THƯỞNG CHUNG CUỘC</h4>
+                <ul>
+                    <li><strong>🥇 01 GIẢI NHẤT - "Ngôi Sao Lan Tỏa":</strong> Dành cho video có tổng lượng tương tác cao nhất. Phần thưởng: 01 Phiếu quà tặng nhập hàng trị giá <strong>10.000.000đ</strong>.</li>
+                    <li><strong>🥈 01 GIẢI NHÌ - "Nhà Bán Hàng Tài Ba":</strong> Dành cho video có tổng lượng tương tác cao thứ 2. Phần thưởng: 01 Phiếu quà tặng nhập hàng trị giá <strong>6.000.000đ</strong>.</li>
+                    <li><strong>🥉 01 GIẢI BA - "Feedback Ấn Tượng":</strong> Dành cho video có tổng lượng tương tác cao thứ 3. Phần thưởng: 04 Phiếu quà tặng nhập hàng trị giá <strong>4.000.000đ</strong>.</li>
+                    <li><strong>🎖️ 20 GIẢI KHUYẾN KHÍCH - "Lan Tỏa Tích Cực":</strong> Dành cho 20 video có tổng tương tác cao tiếp theo. Mỗi giải nhận 01 Phiếu quà tặng nhập hàng trị giá <strong>600.000đ</strong>.</li>
+                    <li><strong>🎖️ 10 GIẢI KHÍCH LỆ - "Ngôi sao của tháng":</strong> Dành cho 10 video có tổng tương tác cao nhất mỗi tháng. Mỗi giải nhận 01 Phiếu quà tặng nhập hàng trị giá <strong>500.000đ</strong>.</li>
+                    <li><strong>🎖️ 01 VINH DANH - "Đại Sứ Bền Bỉ":</strong> Dành cho đối tác gửi về nhiều video hợp lệ nhất. Phần thưởng: 01 Phiếu quà tặng nhập hàng trị giá <strong>3.000.000đ</strong>.</li>
+                </ul>
+            </section>
+            
+            <section id="truyen-thong">
+                <h2>D. KẾ HOẠCH TRUYỀN THÔNG</h2>
+                <h3>GIAI ĐOẠN 1: KHỞI ĐỘNG (1 tuần trước khi bắt đầu)</h3>
+                <p><strong>Mục tiêu:</strong> Tạo sự mong chờ, đảm bảo tất cả đối tác đều nắm rõ thông tin và hào hứng tham gia.</p>
+                <p><strong>Hành động chi tiết:</strong></p>
+                <ul>
+                    <li>Thiết kế "Bộ Nhận Diện Chương Trình": Poster, Banner, Ảnh bìa, Video Trailer.</li>
+                    <li>Soạn thảo "Thông Báo Chính Thức" và ghim lên đầu các nhóm.</li>
+                </ul>
+
+                <h3>GIAI ĐOẠN 2: BÙNG NỔ (Trong thời gian diễn ra cuộc thi)</h3>
+                <p><strong>Mục tiêu:</strong> Duy trì "nhiệt", liên tục tạo động lực, vinh danh các cá nhân tích cực và hỗ trợ đối tác.</p>
+                <p><strong>Hành động chi tiết (Lặp lại hàng tuần):</strong></p>
+                <ul>
+                    <li><strong>Thứ Hai - "BẢNG VÀNG VINH DANH":</strong> Vinh danh TOP 5 đối tác của tuần trước.</li>
+                    <li><strong>Thứ Tư - "FEEDBACK CHẤT CỦA TUẦN":</strong> Chia sẻ 1-2 video dự thi xuất sắc nhất làm mẫu.</li>
+                    <li><strong>Thứ Sáu - "LIVESTREAM THƯỞNG NÓNG":</strong> Công bố điểm và trao thưởng nóng cho các video đã nộp trong tuần.</li>
+                </ul>
+
+                <h3>GIAI ĐOẠN 3: VINH DANH & LAN TỎA (Sau khi cuộc thi kết thúc)</h3>
+                <p><strong>Mục tiêu:</strong> Tôn vinh người chiến thắng, tổng kết thành công và khai thác kho tư liệu thu được.</p>
+                <p><strong>Hành động chi tiết:</strong></p>
+                <ul>
+                    <li>Tổ chức Livestream Gala Trao Giải hoành tráng.</li>
+                    <li>Thiết kế poster vinh danh chuyên nghiệp cho từng cá nhân, điểm bán đoạt giải.</li>
+                    <li>Khai thác tư liệu: Lên kế hoạch biên tập và đăng tải video lên các kênh social, sử dụng video review để chạy quảng cáo.</li>
+                </ul>
+            </section>
+            
+            <section id="phan-cong">
+                <h2>E. PHÂN CÔNG TRÁCH NHIỆM</h2>
+                <table>
+                    <thead><tr><th>Bộ phận</th><th>Nhiệm vụ</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Marketing</strong></td><td>Thiết kế nhận diện, trailer, poster, đăng tải video mẫu, quản lý fanpage.</td></tr>
+                        <tr><td><strong>CSKH</strong></td><td>Hỗ trợ kỹ thuật quay, trực hotline, hướng dẫn nộp video.</td></tr>
+                        <tr><td><strong>Team Media</strong></td><td>Cắt ghép video, xử lý âm thanh, chuẩn bị clip mẫu.</td></tr>
+                        <tr><td><strong>Kế toán</strong></td><td>Theo dõi ngân sách, quà tặng, phối hợp gửi quà.</td></tr>
+                        <tr><td><strong>BTC</strong></td><td>Duyệt video, chấm điểm, công bố kết quả hàng tuần & chung cuộc.</td></tr>
+                    </tbody>
+                </table>
+            </section>
+            
+            <section id="van-hanh">
+                <h2>F. QUY TRÌNH VẬN HÀNH & PHỐI HỢP CHI TIẾT</h2>
+                <h3>1. Quy trình duyệt và đăng tải video lên Fanpage, TikTok</h3>
+                <ol>
+                    <li><strong>Bước 1: Tiếp nhận & Sàng lọc (Huyền + Oanh):</strong> Kiểm tra Google Form mỗi ngày, sàng lọc sơ bộ.</li>
+                    <li><strong>Bước 2: Biên tập & Tối ưu hóa (Huy):</strong> Thêm intro/outro, logo, chỉnh màu, lọc tạp âm, thêm phụ đề, chèn nhạc.</li>
+                    <li><strong>Bước 3: Lên lịch & Đăng tải (Chị Phú - Facebook & Quý - TikTok):</strong> Soạn caption hấp dẫn, đăng tải theo lịch và lấy link gửi lại.</li>
+                </ol>
+
+                <h3>2. Quy trình Seeding & Kêu gọi tương tác nội bộ</h3>
+                <ol>
+                    <li><strong>Bước 1: Thông báo "Lên Sóng" (Huyền):</strong> Gửi link vào nhóm Zalo/Facebook "Nòng Cốt".</li>
+                    <li><strong>Bước 2: Seeding "Mồi" (Nhóm Nòng Cốt):</strong> Trong 30 phút đầu, like/thả tim, để lại bình luận tích cực, gợi mở.</li>
+                    <li><strong>Bước 3: Kêu gọi tương tác toàn hệ thống (Huyền):</strong> Gửi link vào tất cả các nhóm chung để kêu gọi ủng hộ đồng đội.</li>
+                </ol>
+
+                <h3>3. Quy trình theo dõi & báo cáo hiệu quả</h3>
+                <ol>
+                    <li><strong>Bước 1: Thiết lập Bảng theo dõi (BTC):</strong> Tạo file Google Sheets chung để theo dõi điểm.</li>
+                    <li><strong>Bước 2: Cập nhật dữ liệu (Huyền + Oanh):</strong> Cập nhật số liệu tương tác từ các link vào bảng theo dõi cuối tuần.</li>
+                    <li><strong>Bước 3: Báo cáo & Vinh danh (BTC):</strong> Dựa trên dữ liệu để công bố "Bảng Vàng Vinh Danh" và giải chung cuộc.</li>
+                </ol>
+                
+                <h3>4. Quy trình xử lý khủng hoảng & phản hồi tiêu cực</h3>
+                <ol>
+                    <li><strong>Bước 1: Nhận diện & Phân loại:</strong> Phát hiện bình luận tiêu cực, không xóa (trừ spam, vi phạm).</li>
+                    <li><strong>Bước 2: Phản hồi công khai:</strong> Trả lời bình tĩnh, cầu thị trong vòng 1-2 giờ.</li>
+                    <li><strong>Bước 3: Xử lý riêng tư:</strong> Chủ động nhắn tin riêng cho khách hàng để tìm hiểu và giải quyết.</li>
+                    <li><strong>Bước 4: Báo cáo nội bộ:</strong> Báo cáo lại trường hợp cho BTC để rút kinh nghiệm.</li>
+                </ol>
+            </section>
+        </main>
+    </div>
+
+    <button onclick="scrollToTop()" id="toTopBtn" title="Lên đầu trang">↑</button>
+    
+    <script>
+        // --- Gemini Canvas Background Animation ---
+        const canvas = document.getElementById('canvas-background');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 1;
+                this.speedX = Math.random() * 0.5 - 0.25;
+                this.speedY = Math.random() * 0.5 - 0.25;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.size > 0.2) this.size -= 0.015;
+
+                // Reset particle if it goes off screen or becomes too small
+                if (this.size <= 0.2 || this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 2 + 1;
+                    this.speedX = Math.random() * 0.5 - 0.25;
+                    this.speedY = Math.random() * 0.5 - 0.25;
+                }
+            }
+            draw() {
+                ctx.fillStyle = 'rgba(230, 179, 37, 0.8)';
+                ctx.strokeStyle = 'rgba(230, 179, 37, 0.1)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            const numberOfParticles = window.innerWidth < 768 ? 50 : 100;
+            for (let i = 0; i < numberOfParticles; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+            }
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            initParticles();
+        });
+        
+        resizeCanvas();
+        initParticles();
+        animate();
+
+        // --- UI Interactions ---
+        const toTopBtn = document.getElementById("toTopBtn");
+        const sections = document.querySelectorAll("section");
+        const navLinks = document.querySelectorAll("#navbar a");
+        const navbar = document.getElementById('navbar');
+        let lastScrollTop = 0;
+        
+        const scrollFunction = () => {
+            toTopBtn.style.display = (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) ? "block" : "none";
+        };
+        const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        const handleNav = () => {
+            let st = window.pageYOffset || document.documentElement.scrollTop;
+            if (st > lastScrollTop && st > navbar.offsetHeight){
+                navbar.style.top = `-${navbar.offsetHeight + 5}px`;
+            } else {
+                navbar.style.top = "0";
+            }
+            lastScrollTop = st <= 0 ? 0 : st;
+        };
+
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+        sections.forEach(section => sectionObserver.observe(section));
+        
+        const navObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    navLinks.forEach(link => {
+                        link.classList.toggle("active", link.getAttribute("href").substring(1) === entry.target.id);
+                    });
+                }
+            });
+        }, { rootMargin: '-40% 0px -60% 0px' });
+        sections.forEach(section => navObserver.observe(section));
+        
+        window.onscroll = () => {
+            scrollFunction();
+            handleNav();
+        };
+    </script>
+</body>
+</html>
